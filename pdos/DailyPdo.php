@@ -16,30 +16,30 @@ function createPlan($kakaoId, $colorId, $place, $contents, $startTime, $endTime,
 
 }
 
-function plans($kakaoId, $scheduleDate){
+function plans($kakaoId, $date){
     $pdo = pdoSqlConnect();
     $query = "";
-    if($scheduleDate == null){
+    if($date == null){
         $query = "SELECT @ROWNUM := @ROWNUM + 1 AS NO, A.* FROM
         (SELECT colorId, emotionId, isPriority, startTime, place, scheduleDate
            FROM PLANS_TB
           WHERE scheduleDate = DATE(NOW()) AND kakaoId = ?
-          ORDER BY startTime DESC) A,
+          ORDER BY startTime ASC) A,
         (SELECT @ROWNUM := 0 ) B";
 
         $st = $pdo->prepare($query);
         $st->execute([$kakaoId]);
     }
-    else if ($scheduleDate != null){
+    else if ($date != null){
         $query = "SELECT @ROWNUM := @ROWNUM + 1 AS NO, A.* FROM
         (SELECT colorId, emotionId, isPriority, startTime, place, scheduleDate
            FROM PLANS_TB
           WHERE scheduleDate = ? AND kakaoId = ?
-          ORDER BY startTime DESC) A,
+          ORDER BY startTime ASC) A,
         (SELECT @ROWNUM := 0 ) B";
 
         $st = $pdo->prepare($query);
-        $st->execute([$scheduleDate, $kakaoId]);
+        $st->execute([$date, $kakaoId]);
     }
 
     $st->setFetchMode(PDO::FETCH_ASSOC);

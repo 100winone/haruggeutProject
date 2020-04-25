@@ -67,9 +67,9 @@ try {
             $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $kakaoId = $userInfo->kakaoId;
 
-            $scheduleDate = $_GET['scheduleDate'];
+            $date = $_GET['date'];
 
-            $res->result = plans($kakaoId, $scheduleDate);
+            $res->result = plans($kakaoId, $date);
             $res->isSuccess = TRUE;
             $res->code = 100;
             $res->message = "일정 조회 성공";
