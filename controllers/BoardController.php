@@ -9,7 +9,11 @@ $req = json_decode(file_get_contents("php://input"));
 try {
     addAccessLogs($accessLogs, $req);
     switch ($handler) {
-
+      /*
+      * API No. 5 ('GET', '/boards)
+      * API Name : 전체 게시판 종류 조회 API
+      * 마지막 수정 날짜 : 20.04.25
+      */
         case "boards":
             http_response_code(200);
 

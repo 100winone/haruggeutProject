@@ -20,8 +20,8 @@ function plans($kakaoId, $date){
     $pdo = pdoSqlConnect();
     $query = "";
     if($date == null){
-        $query = "SELECT @ROWNUM := @ROWNUM + 1 AS NO, A.* FROM
-        (SELECT colorId, emotionId, isPriority, startTime, place, scheduleDate
+        $query = "SELECT @ROWNUM := @ROWNUM + 1 AS sequence, A.* FROM
+        (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate
            FROM PLANS_TB
           WHERE scheduleDate = DATE(NOW()) AND kakaoId = ?
           ORDER BY startTime ASC) A,
@@ -31,8 +31,8 @@ function plans($kakaoId, $date){
         $st->execute([$kakaoId]);
     }
     else if ($date != null){
-        $query = "SELECT @ROWNUM := @ROWNUM + 1 AS NO, A.* FROM
-        (SELECT colorId, emotionId, isPriority, startTime, place, scheduleDate
+        $query = "SELECT @ROWNUM := @ROWNUM + 1 AS sequence, A.* FROM
+        (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate
            FROM PLANS_TB
           WHERE scheduleDate = ? AND kakaoId = ?
           ORDER BY startTime ASC) A,
@@ -49,4 +49,21 @@ function plans($kakaoId, $date){
     $pdo = null;
 
     return $res;
+}
+
+function deletePlan($kakaoId, $no)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "DELETE FROM PLANS_TB
+               WHERE kakaoId = ? 
+                 AND no = ?";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId, $no]);
+
+    $st = null;
+    $pdo = null;
+
 }
