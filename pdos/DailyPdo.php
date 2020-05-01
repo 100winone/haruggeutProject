@@ -1,15 +1,15 @@
 <?php
 
-function createPlan($kakaoId, $colorId, $place, $contents, $startTime, $endTime, $scheduleDate, $title)
+function createPlan($kakaoId, $colorId, $place, $contents, $startTime, $endTime, $scheduleDate, $title, $isPriority)
 {
 
     $pdo = pdoSqlConnect();
 
-    $query = "INSERT INTO PLANS_TB (kakaoId, colorId, place, contents, startTime, endTime, scheduleDate, title)
-              VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO PLANS_TB (kakaoId, colorId, place, contents, startTime, endTime, scheduleDate, title, isPriority)
+              VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $st = $pdo->prepare($query);
-    $st->execute([$kakaoId, $colorId, $place, $contents, $startTime, $endTime, $scheduleDate, $title]);
+    $st->execute([$kakaoId, $colorId, $place, $contents, $startTime, $endTime, $scheduleDate, $title, $isPriority]);
 
     $st = null;
     $pdo = null;
@@ -59,6 +59,25 @@ function deletePlan($kakaoId, $no)
     $query = "DELETE FROM PLANS_TB
                WHERE kakaoId = ? 
                  AND no = ?";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId, $no]);
+
+    $st = null;
+    $pdo = null;
+
+}
+
+function updateFavoriteStatus($kakaoId, $no)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "UPDATE PLANS_TB
+                 SET isPriority = CASE WHEN isPriority = 1 THEN 0
+                                    WHEN isPriority = 0 THEN 1
+                                     END
+               WHERE kakaoId = ? AND no = ?";
 
     $st = $pdo->prepare($query);
     $st->execute([$kakaoId, $no]);
