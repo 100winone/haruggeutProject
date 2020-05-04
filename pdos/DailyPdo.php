@@ -4,7 +4,8 @@ function createPlan($kakaoId, $colorId, $place, $contents, $startTime, $endTime,
 {
 
     $pdo = pdoSqlConnect();
-
+    if(!$isPriority)
+        $isPriority = 0;
     $query = "INSERT INTO PLANS_TB (kakaoId, colorId, place, contents, startTime, endTime, scheduleDate, title, isPriority)
               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
