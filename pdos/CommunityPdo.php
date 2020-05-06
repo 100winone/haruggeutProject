@@ -53,3 +53,20 @@ function modifyPost($kakaoId, $postId, $title, $postContents)
     $pdo = null;
 
 }
+
+function deletePost($kakaoId, $postId)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "DELETE FROM POST_TB
+               WHERE writerId = ? 
+                 AND postId = ?";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId, $postId]);
+
+    $st = null;
+    $pdo = null;
+
+}
