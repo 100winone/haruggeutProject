@@ -36,3 +36,20 @@ function createPost($kakaoId, $title, $postContents)
     $pdo = null;
 
 }
+
+function modifyPost($kakaoId, $postId, $title, $postContents)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "UPDATE POST_TB
+                 SET title = ?, postContents = ?
+               WHERE writerId = ? AND postId = ?;";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$title, $postContents, $kakaoId, $postId]);
+
+    $st = null;
+    $pdo = null;
+
+}

@@ -31,7 +31,7 @@ try {
             http_response_code(200);
             $res->isSuccess = TRUE;
             $res->code = 100;
-            $res->message = "테스트 성공";
+            $res->message = "유효한 토큰입니다";
 
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;

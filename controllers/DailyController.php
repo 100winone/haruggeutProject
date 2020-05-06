@@ -111,6 +111,34 @@ try {
             $res->message = "일정 삭제 성공";
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
+        /*
+                 * API No. 5 ('GET', '/plans/{planNo})
+                 * API Name : 일정 상세 조회 API
+                 * 마지막 수정 날짜 : 20.05.06
+                 */
+        case "detailPlan":
+            http_response_code(200);
+
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"]; // jwt
+
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $kakaoId = $userInfo->kakaoId;
+            $no = $vars["planNo"];
+
+            $res->result = detailPlan($no, $kakaoId);
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "일정 조회 성공";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
 
         /*
         * API No. 6 ('PATCH', '/plans/{planNo}/favorite)
@@ -157,6 +185,52 @@ try {
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }
+
+        /*
+                * API No. 10 ('PATCH', '/plans/{planNo})
+                * API Name : 일정 수정  API
+                * 마지막 수정 날짜 : 20.05.06
+                */
+        case "editPlan":
+            http_response_code(200);
+
+            $jwt = $_SERVER["HTTP_X_ACCESS_TOKEN"]; // jwt
+
+            if (!isValidHeader($jwt, JWT_SECRET_KEY)) {
+                $res->isSuccess = FALSE;
+                $res->code = 201;
+                $res->message = "유효하지 않은 토큰입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                addErrorLogs($errorLogs, $res, $req);
+                return;
+            }
+            $no = $vars["planNo"];
+            $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
+            $kakaoId = $userInfo->kakaoId;
+
+            if(!isPlan($kakaoId, $no)){
+                $res->isSucces = FALSE;
+                $res->code = 202;
+                $res->message = "존재하지 않는 일정입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
+
+            $colorId = $req->colorId;
+            $place = $req->place;
+            $contents = $req->contents;
+            $startTime = $req->startTime;
+            $endTime = $req->endTime;
+            $scheduleDate = $req->scheduleDate;
+            $title = $req->title;
+            $isPriority = $req->isPriority;
+
+            editPlan($kakaoId, $no, $colorId, $place, $contents, $startTime, $endTime, $scheduleDate, $title, $isPriority);
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "일정 수정이 완료되었습니다.";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            return;
 
     }
 } catch (\Exception $e) {

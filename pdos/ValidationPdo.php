@@ -38,3 +38,23 @@ function isFavorite($kakaoId, $no){
 
     return intval($res[0]["exist"]);
 }
+
+function isPost($kakaoId, $postId){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(
+                            SELECT *
+                              FROM POST_TB
+                             WHERE writerId= ? AND postId =?) AS exist";
+
+
+    $st = $pdo->prepare($query);
+    //    $st->execute([$param,$param]);
+    $st->execute([$kakaoId, $postId]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+
+}
