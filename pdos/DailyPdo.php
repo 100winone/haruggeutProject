@@ -121,5 +121,4 @@ function editPlan($kakaoId, $no, $colorId, $place, $contents, $startTime, $endTi
 
     $st = null;
     $pdo = null;
-
 }

@@ -98,7 +98,7 @@ try {
             $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $kakaoId = $userInfo->kakaoId;
 
-            if(!isPost($kakaoId, $postId)){
+            if(!isMyPost($kakaoId, $postId)){
                 $res->isSucces = FALSE;
                 $res->code = 202;
                 $res->message = "존재하지 않는 글 입니다.";
@@ -138,7 +138,7 @@ try {
             $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $kakaoId = $userInfo->kakaoId;
 
-            if(!isPost($kakaoId, $postId)){
+            if(!isMyPost($kakaoId, $postId)){
                 $res->isSucces = FALSE;
                 $res->code = 202;
                 $res->message = "존재하지 않는 글 입니다.";
