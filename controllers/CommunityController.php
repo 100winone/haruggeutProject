@@ -33,7 +33,15 @@ try {
             $kakaoId = $userInfo->kakaoId;
 
             $lastNo = $_GET['lastNo'];
-            if(!isLastPost($kakaoId, $lastNo)){
+            if(!$lastNo || isLastPost($kakaoId, $lastNo)){
+                $res->result = posts($kakaoId ,$lastNo);
+                $res->isSuccess = TRUE;
+                $res->code = 100;
+                $res->message = "글 조회 성공";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
+            else if(!isLastPost($kakaoId, $lastNo)){
                 $res->isSuccess = FALSE;
                 $res->code = 202;
                 $res->message = "더 이상 존재하는 글이 없습니다.";
@@ -41,14 +49,6 @@ try {
                 addErrorLogs($errorLogs, $res, $req);
                 return;
             }
-
-            $res->result = posts($kakaoId ,$lastNo);
-            $res->isSuccess = TRUE;
-            $res->code = 100;
-            $res->message = "글 조회 성공";
-            echo json_encode($res, JSON_NUMERIC_CHECK);
-            break;
-
         /*
              * API No. 8 ('POST', '/post)
              * API Name : 일정입력 API

@@ -34,12 +34,8 @@ function posts($kakaoId, $lastNo){
     }
 
     $st->setFetchMode(PDO::FETCH_ASSOC);
-    $res["posts"] = $st->fetchAll();
-    $countPosts = count($res["posts"]);
+    $res = $st->fetchAll();
 
-    if($countPosts == 0){
-        return "마지막 글입니다.";
-    }
     $st = null;
     $pdo = null;
 
