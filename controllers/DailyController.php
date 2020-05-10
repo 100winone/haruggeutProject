@@ -133,6 +133,14 @@ try {
             $kakaoId = $userInfo->kakaoId;
             $no = $vars["planNo"];
 
+            if (!isPlan($kakaoId, $no)) {
+                $res->isSucces = FALSE;
+                $res->code = 202;
+                $res->message = "존재하지 않는 일정입니다.";
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+            }
+
             $res->result = detailPlan($no, $kakaoId);
             $res->isSuccess = TRUE;
             $res->code = 100;
