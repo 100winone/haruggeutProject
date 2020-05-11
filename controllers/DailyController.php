@@ -149,7 +149,7 @@ try {
             break;
 
         /*
-        * API No. 6 ('PATCH', '/plans/{planNo}/favorite)
+        * API No. 7 ('PATCH', '/plans/{planNo}/favorite)
         * API Name : 즐겨찾기 추가 제거 API
         * 마지막 수정 날짜 : 20.04.30
         */
@@ -195,10 +195,10 @@ try {
             }
 
         /*
-                * API No. 10 ('PATCH', '/plans/{planNo})
-                * API Name : 일정 수정  API
-                * 마지막 수정 날짜 : 20.05.06
-                */
+         * API No. 6 ('PATCH', '/plans/{planNo})
+         * API Name : 일정 수정  API
+         * 마지막 수정 날짜 : 20.05.06
+         */
         case "editPlan":
             http_response_code(200);
 

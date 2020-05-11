@@ -11,8 +11,8 @@ try {
     switch ($handler) {
 
         /*
-         * API No. 13 ('PATCH', '/plans/{planNo}/emotion/{emotionId}')
-         * API Name : 감정 등록 및 수정 API
+         * API No. 16 ('PATCH', '/plans/{planNo}/emotion/{emotionId}')
+         * API Name : 일정 감정 등록 및 수정 API
          * 마지막 수정 날짜 : 20.05.09
          */
         case "modifyEmotion":
@@ -56,7 +56,7 @@ try {
             }
 
         /*
-        * API No. 14 ('POST', '/comment/{postId}')
+        * API No. 15 ('POST', '/comment/{postId}')
         * API Name : 감정 댓글 작성 및 수정 API
         * 마지막 수정 날짜 : 20.05.09
         */

@@ -121,3 +121,41 @@ function isLastPost($kakaoId, $lastNo){
 
     return intval($res[0]["exist"]);
 }
+
+function isAlreadyFavorite($kakaoId, $postId){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(
+                            SELECT *
+                              FROM FAVORPOST_TB
+                             WHERE kakaoId = ? AND postId = ?) AS exist";
+
+    $st = $pdo->prepare($query);
+    //    $st->execute([$param,$param]);
+    $st->execute([$kakaoId, $postId]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st=null;$pdo = null;
+
+    return intval($res[0]["exist"]);
+
+}
+
+function favoriteState($kakaoId, $postId){
+    $pdo = pdoSqlConnect();
+    $query = "SELECT EXISTS(
+                            SELECT *
+                              FROM FAVORPOST_TB
+                             WHERE kakaoId= ? AND postId = ?
+                               AND isPriority = 0) AS exist";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId, $postId]);
+    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $res = $st->fetchAll();
+
+    $st = null;
+    $pdo = null;
+
+    return intval($res[0]["exist"]);
+}

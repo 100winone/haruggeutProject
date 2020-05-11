@@ -211,3 +211,37 @@ function detailPost($kakaoId, $postId){
 
     return $res[0];
 }
+
+function updateFavoriteState($kakaoId, $postId)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "UPDATE FAVORPOST_TB
+                 SET isPriority = CASE WHEN isPriority = 1 THEN 0
+                                    WHEN isPriority = 0 THEN 1
+                                     END
+               WHERE kakaoId = ? AND postId = ?";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId, $postId]);
+
+    $st = null;
+    $pdo = null;
+
+}
+
+function favoritePost($kakaoId,$postId)
+{
+
+    $pdo = pdoSqlConnect();
+
+    $query = "INSERT INTO FAVORPOST_TB (kakaoId, postId, isPriority) VALUES (?,?,1)";
+
+    $st = $pdo->prepare($query);
+    $st->execute([$kakaoId,$postId]);
+
+    $st = null;
+    $pdo = null;
+
+}
