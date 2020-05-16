@@ -28,6 +28,47 @@ function isValidHeader($jwt, $key)
     }
 }
 
+function testSendFcm($fcmToken)
+{
+    $url = 'https://fcm.googleapis.com/fcm/send';
+    $key = 'AAAAW0xzpXc:APA91bFb2ahcg7wbITh8ImD-J_oXZQtMUJx493eCCRZHqWWnXTc1jMXkUg7H1UZP3SnP4lD8SwXONqkAS2PNOXxr5qTHcOCLuK6JqidmOUOCZh8gqSJFjCK5rhMmIwtqclf84qiDc6pA';
+    $headers = array(
+        'Authorization: key=' . $key,
+        'Content-Type: application/json'
+    );
+    $data['title'] = "레오";
+    $data['body'] = "뜨나요?";
+
+    $notification['title'] = $data['title'];
+    $notification['body'] = $data['body'];
+    $fields['notification'] = $notification;
+
+    $fields['to'] = $fcmToken;
+    $fields['content_available'] = true;
+    $fields['priority'] = "high";
+
+    $fields = json_encode($fields, JSON_NUMERIC_CHECK);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+    /*
+     * 로그인 자동로그인..
+     * FCM 토큰 등록 API
+     * 파이어베이스에 그룹..!!
+     * 천개의 요청...*/
+    $result = curl_exec($ch);
+
+    if ($result === FALSE) {
+        //die('FCM Send Error: ' . curl_error($ch));
+    }
+    curl_close($ch);
+    return $result;
+}
 function sendFcm($fcmToken, $data, $key, $deviceType)
 {
     $url = 'https://fcm.googleapis.com/fcm/send';
@@ -37,7 +78,7 @@ function sendFcm($fcmToken, $data, $key, $deviceType)
         'Content-Type: application/json'
     );
 
-    $fields['data'] = $data;
+    $fields['data'] = "fcm 테스트";
 
     if ($deviceType == 'IOS') {
         $notification['title'] = $data['title'];

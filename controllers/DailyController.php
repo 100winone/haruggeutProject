@@ -240,6 +240,23 @@ try {
             echo json_encode($res, JSON_NUMERIC_CHECK);
             return;
 
+        /*
+    * API No.  ('POST', '/fcmtest)
+    * API Name : 푸시알림 API
+    * 마지막 수정 날짜 : 20.05.16
+    */
+
+        case "fcmTest":
+            http_response_code(200);
+            $fcmToken = 'c5_Lajnnd4A:APA91bHzpPYCLLjKbShqk4pZ1-rWyI2uxicgefL3xdaukgE_-rj8KJTNsFlrazvQmaWCIt6VNNTjp7nyIC9oBKdh9E158B8RP_5_q6SHSdfyw3pNWnh9LXoD3qTphj-iCzAODXSSO86X';
+
+            testSendFcm($fcmToken);
+
+            $res->isSuccess = TRUE;
+            $res->code = 100;
+            $res->message = "fcm 테스트 성공";
+            echo json_encode($res, JSON_NUMERIC_CHECK);
+            break;
     }
 } catch (\Exception $e) {
     return getSQLErrorException($errorLogs, $e, $req);
