@@ -281,6 +281,7 @@ try {
             $res->message = "글 즐겨찾기 상태에 추가되었습니다.(처음 추가됨)";
             echo json_encode($res, JSON_NUMERIC_CHECK);
             break;
+
     }
 } catch (\Exception $e) {
     return getSQLErrorException($errorLogs, $e, $req);
