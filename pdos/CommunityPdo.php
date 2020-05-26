@@ -163,6 +163,9 @@ function basicPosts($kakaoId, $sort){
 function detailPost($kakaoId, $postId){
     $pdo = pdoSqlConnect();
     $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(FT.isPriority, 0) AS isFavorite
+                     ,(CASE WHEN writerId = ? THEN 1
+                            ELSE 0
+                            END) AS isMine
                 FROM POST_TB AS PT
                 LEFT JOIN (SELECT postId, isPriority
                              FROM FAVORPOST_TB
@@ -170,7 +173,7 @@ function detailPost($kakaoId, $postId){
                WHERE PT.postId = ?";
 
     $st = $pdo->prepare($query);
-    $st->execute([$kakaoId, $postId]);
+    $st->execute([$kakaoId, $kakaoId, $postId]);
 
     $st->setFetchMode(PDO::FETCH_ASSOC);
     $res = $st->fetchAll();
