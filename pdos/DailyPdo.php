@@ -22,25 +22,41 @@ function plans($kakaoId, $date){
     $query = "";
     if($date == null){
         $query = "SELECT @ROWNUM := @ROWNUM + 1 AS sequence, A.* FROM
-        (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
-           FROM PLANS_TB
-          WHERE scheduleDate = DATE(NOW()) AND kakaoId = ?
-          ORDER BY startTime ASC) A,
-        (SELECT @ROWNUM := 0 ) B";
+                         ((SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
+                             FROM PLANS_TB
+                            WHERE scheduleDate = DATE(NOW()) AND kakaoId = ?
+                              AND isPriority = 1
+                            ORDER BY startTime ASC)
+                            UNION ALL
+                          (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
+                             FROM PLANS_TB
+                            WHERE scheduleDate = DATE(NOW()) AND kakaoId = ?
+                              AND isPriority = 0
+                            ORDER BY startTime ASC)
+                            ) A,
+                           (SELECT @ROWNUM := 0 ) B";
 
         $st = $pdo->prepare($query);
-        $st->execute([$kakaoId]);
+        $st->execute([$kakaoId, $kakaoId]);
     }
     else if ($date != null){
         $query = "SELECT @ROWNUM := @ROWNUM + 1 AS sequence, A.* FROM
-        (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
-           FROM PLANS_TB
-          WHERE scheduleDate = ? AND kakaoId = ?
-          ORDER BY startTime ASC) A,
-        (SELECT @ROWNUM := 0 ) B";
+                         ((SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
+                             FROM PLANS_TB
+                            WHERE scheduleDate = ? AND kakaoId = ?
+                              AND isPriority = 1
+                            ORDER BY startTime ASC)
+                            UNION ALL
+                          (SELECT no AS planNo, title, colorId, emotionId, isPriority, startTime, endTime, place, scheduleDate, contents
+                             FROM PLANS_TB
+                            WHERE scheduleDate = ? AND kakaoId = ?
+                              AND isPriority = 0
+                            ORDER BY startTime ASC)
+                            ) A,
+                           (SELECT @ROWNUM := 0 ) B";
 
         $st = $pdo->prepare($query);
-        $st->execute([$date, $kakaoId]);
+        $st->execute([$date, $kakaoId, $date, $kakaoId]);
     }
 
     $st->setFetchMode(PDO::FETCH_ASSOC);
