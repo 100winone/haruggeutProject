@@ -1,5 +1,4 @@
 <?php
-
 function posts($kakaoId, $lastNo){
     $pdo = pdoSqlConnect();
     $query = "";
