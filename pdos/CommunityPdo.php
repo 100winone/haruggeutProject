@@ -3,33 +3,45 @@ function posts($kakaoId, $lastNo){
     $pdo = pdoSqlConnect();
     $query = "";
     if(!$lastNo){
-        $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(CT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite
+        $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(CT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite, EM.emotionId
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                  FROM COMMENT_TB
                                 GROUP BY postId) AS CT ON CT.postId = PT.postId
-                                 LEFT JOIN (SELECT postId, isPriority
-                                              FROM FAVORPOST_TB
-                                             WHERE kakaoId = ?) FT on PT.postId = FT.postId
-                   ORDER BY PT.postId DESC LIMIT 0, 20;";
+                    LEFT JOIN (SELECT postId, isPriority
+                                 FROM FAVORPOST_TB
+                                WHERE kakaoId = ?) FT on PT.postId = FT.postId
+                    LEFT JOIN (SELECT PT.postId, ifnull(emotionId, 0) AS emotionId
+                                 FROM POST_TB AS PT
+                                 LEFT JOIN (SELECT CT.postId , CT.commenterId, ET.emotionId
+                                              FROM EMOTION_TB AS ET
+                                              LEFT JOIN COMMENT_TB AS CT on CT.emotionId = ET.emotionId
+                                             WHERE commenterId = ?) A on A.postId = PT.postId) AS EM ON EM.postId = PT.postId
+                   ORDER BY PT.postId DESC LIMIT 0, 20";
 
         $st = $pdo->prepare($query);
-        $st->execute([$kakaoId]);
+        $st->execute([$kakaoId, $kakaoId]);
     } else {
-        $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(CT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite
+        $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(CT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite, EM.emotionId
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                  FROM COMMENT_TB
                                 GROUP BY postId) AS CT ON CT.postId = PT.postId
-                                 LEFT JOIN (SELECT postId, isPriority
-                                              FROM FAVORPOST_TB
-                                             WHERE kakaoId = ?) FT on PT.postId = FT.postId
-                    WHERE PT.postId < ?
+                    LEFT JOIN (SELECT postId, isPriority
+                                 FROM FAVORPOST_TB
+                                WHERE kakaoId = ?) FT on PT.postId = FT.postId
+                    LEFT JOIN (SELECT PT.postId, ifnull(emotionId, 0) AS emotionId
+                                 FROM POST_TB AS PT
+                                 LEFT JOIN (SELECT CT.postId , CT.commenterId, ET.emotionId
+                                              FROM EMOTION_TB AS ET
+                                              LEFT JOIN COMMENT_TB AS CT on CT.emotionId = ET.emotionId
+                                             WHERE commenterId = ?) A on A.postId = PT.postId) AS EM ON EM.postId = PT.postId
+                   WHERE PT.postId < ?
                    ORDER BY PT.postId DESC LIMIT 0, 20";
 
 
         $st = $pdo->prepare($query);
-        $st->execute([$kakaoId, $lastNo]);
+        $st->execute([$kakaoId, $kakaoId, $lastNo]);
     }
 
     $st->setFetchMode(PDO::FETCH_ASSOC);
@@ -161,7 +173,7 @@ function basicPosts($kakaoId, $sort){
 
 function detailPost($kakaoId, $postId){
     $pdo = pdoSqlConnect();
-    $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(FT.isPriority, 0) AS isFavorite
+    $query = "SELECT PT.postId, PT.title, PT.postContents, PT.createdAt, ifnull(FT.isPriority, 0) AS isFavorite, ifnull(CT.cnt, 0) as totalCnt
                      ,(CASE WHEN writerId = ? THEN 1
                             ELSE 0
                             END) AS isMine
@@ -169,6 +181,9 @@ function detailPost($kakaoId, $postId){
                 LEFT JOIN (SELECT postId, isPriority
                              FROM FAVORPOST_TB
                             WHERE kakaoId = ?) FT on PT.postId = FT.postId
+                LEFT JOIN (SELECT postId, count(*) AS cnt
+                             FROM COMMENT_TB
+                             GROUP BY postId) CT on CT.postId = PT.postId
                WHERE PT.postId = ?";
 
     $st = $pdo->prepare($query);
