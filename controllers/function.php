@@ -28,21 +28,37 @@ function isValidHeader($jwt, $key)
     }
 }
 
-function testSendFcm($fcmToken)
+function sendCommentFcm($fcmToken, $postId, $postTitle)
 {
+//    $pdo = pdoSqlConnect();
+//    $getPostTitle = "SELECT title
+//                       FROM POST_TB
+//                      WHERE postId = ?";
+//    $st = $pdo->prepare($getPostTitle);
+//    $st->execute([$postId]);
+////
+//    $st->setFetchMode(PDO::FETCH_ASSOC);
+//    $getPostRes = $st->fetchAll();
+////
+//    echo $getPostRes["title"];
     $url = 'https://fcm.googleapis.com/fcm/send';
     $key = 'AAAAW0xzpXc:APA91bFb2ahcg7wbITh8ImD-J_oXZQtMUJx493eCCRZHqWWnXTc1jMXkUg7H1UZP3SnP4lD8SwXONqkAS2PNOXxr5qTHcOCLuK6JqidmOUOCZh8gqSJFjCK5rhMmIwtqclf84qiDc6pA';
     $headers = array(
         'Authorization: key=' . $key,
         'Content-Type: application/json'
     );
-    $data['title'] = "레오";
-    $data['body'] = "뜨나요?";
+    $data['title'] = $postTitle;
+    $data['body'] = "새로운 글이 작성되었어요 한 번 확인해보세요!";
+    $data['postId'] = $postId;
+//    echo $data['postId'];
 
     $notification['title'] = $data['title'];
     $notification['body'] = $data['body'];
-    $fields['notification'] = $notification;
 
+
+//    echo $notification;
+    $fields['notification'] = $notification;
+    $fields['data'] = $data;
     $fields['to'] = $fcmToken;
     $fields['content_available'] = true;
     $fields['priority'] = "high";
@@ -62,8 +78,9 @@ function testSendFcm($fcmToken)
      * 파이어베이스에 그룹..!!
      * 천개의 요청...*/
     $result = curl_exec($ch);
-
+//    echo $notification['postId'];
     if ($result === FALSE) {
+        
         //die('FCM Send Error: ' . curl_error($ch));
     }
     curl_close($ch);
@@ -71,6 +88,7 @@ function testSendFcm($fcmToken)
 }
 function sendFcm($fcmToken, $data, $key, $deviceType)
 {
+
     $url = 'https://fcm.googleapis.com/fcm/send';
 
     $headers = array(

@@ -33,6 +33,7 @@ try {
             $no = $vars["planNo"];
             $emotionId = $vars["emotionId"];
 
+
             if (!isPlan($kakaoId, $no)) {
                 $res->isSucces = FALSE;
                 $res->code = 202;
@@ -77,7 +78,8 @@ try {
             $userInfo = getDataByJWToken($jwt, JWT_SECRET_KEY);
             $kakaoId = $userInfo->kakaoId;
             $postId = $vars["postId"];
-
+            $fcmToken = getFcmTokenByPost($postId);
+//            echo $fcmToken;
             if (!isPost($postId)) {
                 $res->isSucces = FALSE;
                 $res->code = 202;
@@ -92,6 +94,7 @@ try {
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }
+            $postTitle = getPostTitle($postId);
 
             if(isCommented($kakaoId, $postId)){ // update
                 modifyComment($kakaoId, $postId, $emotionId);
@@ -102,12 +105,14 @@ try {
                 return;
             } else { // insert
                 createComment($kakaoId, $postId, $emotionId);
+                sendCommentFcm($fcmToken, $postId, $postTitle);
                 $res->isSuccess = TRUE;
                 $res->code = 101;
                 $res->message = "감정 댓글 작성 성공 (초기 댓글 작성)";
                 echo json_encode($res, JSON_NUMERIC_CHECK);
                 return;
             }
+
     }
 } catch (\Exception $e) {
     return getSQLErrorException($errorLogs, $e, $req);

@@ -7,6 +7,7 @@ function posts($kakaoId, $lastNo){
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                  FROM COMMENT_TB
+                                WHERE emotionId != 0
                                 GROUP BY postId) AS CT ON CT.postId = PT.postId
                     LEFT JOIN (SELECT postId, isPriority
                                  FROM FAVORPOST_TB
@@ -26,6 +27,7 @@ function posts($kakaoId, $lastNo){
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                  FROM COMMENT_TB
+                                WHERE emotionId != 0 
                                 GROUP BY postId) AS CT ON CT.postId = PT.postId
                     LEFT JOIN (SELECT postId, isPriority
                                  FROM FAVORPOST_TB
@@ -109,6 +111,7 @@ function basicPosts($kakaoId, $sort){
                 FROM POST_TB AS PT
                 LEFT JOIN (SELECT postId, count(*) AS cnt
                              FROM COMMENT_TB
+                            WHERE emotionId != 0
                             GROUP BY postId) AS CT ON CT.postId = PT.postId
                 LEFT JOIN (SELECT postId, isPriority
                              FROM FAVORPOST_TB
@@ -123,6 +126,7 @@ function basicPosts($kakaoId, $sort){
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                 FROM COMMENT_TB
+                               WHERE emotionId != 0
                                GROUP BY postId) AS CT ON CT.postId = PT.postId
                     LEFT JOIN (SELECT postId, isPriority
                                 FROM FAVORPOST_TB
@@ -141,6 +145,7 @@ function basicPosts($kakaoId, $sort){
                     LEFT JOIN POST_TB AS PT on PT.postId = CT.postId
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                  FROM COMMENT_TB
+                                WHERE emotionId != 0
                                 GROUP BY postId) CNTCT on CNTCT.postId = CT.postId
                    WHERE commenterId = ?
                    ORDER BY CT.postId DESC";
@@ -152,6 +157,7 @@ function basicPosts($kakaoId, $sort){
                     FROM POST_TB AS PT
                     LEFT JOIN (SELECT postId, count(*) AS cnt
                                 FROM COMMENT_TB
+                               WHERE emotionId != 0 
                                GROUP BY postId) AS CT ON CT.postId = PT.postId
                     LEFT JOIN (SELECT postId, isPriority
                                 FROM FAVORPOST_TB
@@ -183,6 +189,7 @@ function detailPost($kakaoId, $postId){
                             WHERE kakaoId = ?) FT on PT.postId = FT.postId
                 LEFT JOIN (SELECT postId, count(*) AS cnt
                              FROM COMMENT_TB
+                            WHERE emotionId != 0 
                              GROUP BY postId) CT on CT.postId = PT.postId
                WHERE PT.postId = ?";
 
