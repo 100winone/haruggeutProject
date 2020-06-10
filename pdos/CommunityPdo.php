@@ -99,6 +99,12 @@ function deletePost($kakaoId, $postId)
     $st = $pdo->prepare($query);
     $st->execute([$kakaoId, $postId]);
 
+    $subQuery = "DELETE FROM COMMENT_TB
+                  WHERE postId = ?";
+
+    $st = $pdo->prepare($subQuery);
+    $st->execute([$postId]);
+
     $st = null;
     $pdo = null;
 

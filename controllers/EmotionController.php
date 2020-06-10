@@ -105,7 +105,9 @@ try {
                 return;
             } else { // insert
                 createComment($kakaoId, $postId, $emotionId);
-                sendCommentFcm($fcmToken, $postId, $postTitle);
+                if(!isMyPost($kakaoId, $postId)) {
+                    sendCommentFcm($fcmToken, $postId, $postTitle);
+                }
                 $res->isSuccess = TRUE;
                 $res->code = 101;
                 $res->message = "감정 댓글 작성 성공 (초기 댓글 작성)";
