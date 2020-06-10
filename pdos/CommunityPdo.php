@@ -137,7 +137,7 @@ function basicPosts($kakaoId, $sort){
         $st = $pdo->prepare($query);
         $st->execute([$kakaoId, $kakaoId]);
     } else if($sort == "mycomment"){
-        $query = "SELECT CT.postId, CT.emotionId, PT.title, PT.postContents, PT.createdAt,ifnull(CNTCT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite
+        $query = "SELECT PT.postId, CT.emotionId, PT.title, PT.postContents, PT.createdAt,ifnull(CNTCT.cnt, 0) AS cnt, ifnull(FT.isPriority, 0) AS isFavorite
                     FROM COMMENT_TB AS CT
                     LEFT JOIN (SELECT postId, isPriority
                                 FROM FAVORPOST_TB
@@ -147,7 +147,7 @@ function basicPosts($kakaoId, $sort){
                                  FROM COMMENT_TB
                                 WHERE emotionId != 0
                                 GROUP BY postId) CNTCT on CNTCT.postId = CT.postId
-                   WHERE commenterId = ?
+                   WHERE commenterId = ? AND PT.postId IS NOT NULL
                    ORDER BY CT.postId DESC";
 
         $st = $pdo->prepare($query);
